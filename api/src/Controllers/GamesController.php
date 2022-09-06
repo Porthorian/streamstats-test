@@ -10,6 +10,9 @@ use Porthorian\Utility\Json\JsonWrapper;
 
 class GamesController
 {
+	/**
+	 * Total number of streams for each game
+	 */
 	public function getTotalStreamsForEachGame(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
 		$game = new GameEntity();
@@ -27,6 +30,9 @@ class GamesController
 		return $response->withHeader('Content-type', 'application/json')->withStatus(200);
 	}
 
+	/**
+	 * Top games by viewer count for each game
+	 */
 	public function getTopGamesByViewerCount(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
 		$game = new GameEntity();

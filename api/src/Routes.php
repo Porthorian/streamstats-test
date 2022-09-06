@@ -59,10 +59,10 @@ class Routes
 		$this->collector->group('/streams', function (RouteCollectorProxyInterface $group) {
 			$group->get('/median', StreamsController::class.':getMedianOfViewers');
 			$group->get('/top100', StreamsController::class.':getTop100StreamsByViewerCount');
-			$group->get('/total_start', StreamsController::class.':getTotalNumberStreamsByStartTime');
+			$group->get('/total_start', StreamsController::class.':getTotalStreamsByStartTime');
 			$group->get('/top1000_following', StreamsController::class.':getTop1000StreamsFollowingByUser');
-			$group->get('/lowest_following_calc', StreamsController::class.'getCalcLowestViewerCountToMakeTop1000');
-			$group->get('/tags_shared', StreamsController::class.'getTagsSharedBetweenFollowedStreams');
+			$group->get('/lowest_following_calc', StreamsController::class.':getCalcLowestViewerToMakeTop1000');
+			$group->get('/tags_shared', StreamsController::class.':getTagsSharedBetweenFollowedStreams');
 		})->add(new Auth());
 	}
 }
