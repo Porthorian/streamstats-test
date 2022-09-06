@@ -216,6 +216,39 @@ class Client
 		return $decode['data'];
 	}
 
+	public function getAllStreamTags(string &$cursor = '') : array
+	{
+		$this->checkAuthentication();
+
+		try
+		{
+			$params = [
+				'query' => [
+					'first' => 100
+				]
+			];
+
+			if ($cursor != '')
+			{
+				$params['query']['after'] = $cursor;
+			}
+
+			$response = $this->guzzle->get('helix/tags/streams', $params);
+		}
+		catch (Exception $e)
+		{
+			throw new TwitchException('Failed to get all stream tags.', $e);
+		}
+
+		$decode = JsonWrapper::decode((string)$response->getBody());
+		if ($decode === null)
+		{
+			throw new TwitchException('Failed to decode stream tags. Error: '.JsonWrapper::getLastError());
+		}
+		$cursor = $decode['pagination']['cursor'];
+		return $decode['data'];
+	}
+
 	////
 	// Public static routines
 	////
