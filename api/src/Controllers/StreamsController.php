@@ -7,9 +7,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Porthorian\StreamStats\Modules\Streams\StreamEntity;
 use Porthorian\StreamStats\Modules\Streams\FollowingEntity;
+use Porthorian\StreamStats\Modules\Streams\Following;
 use Porthorian\StreamStats\Modules\Streams\Tags\StreamTagEntity;
+use Porthorian\StreamStats\Modules\Users\User;
 use Porthorian\StreamStats\Util\ResponseHelper;
 use Porthorian\StreamStats\Session;
+use Porthorian\StreamStats\Modules\Twitch\Client as TwitchClient;
 
 class StreamsController
 {
@@ -74,5 +77,39 @@ class StreamsController
 		return ResponseHelper::success($response, array_map(function ($tag) {
 			return $tag->toPublicArray();
 		},(new StreamTagEntity())->getSharedTagsFromFollowingToTop1000(Session::get('user_id_logged_in'))));
+	}
+
+	public static function populateInitialStreamsUserMap(TwitchClient $client, User $user) : void
+	{
+		$cursor = '';
+		$ids = [];
+		while (true)
+		{
+			$twitch_stream_ids = [];
+			foreach ($client->getFollowedStreams($user->getTwitchUserId(), $cursor) as $data)
+			{
+				$twitch_stream_ids[] = $data['id'];
+			}
+
+			foreach ((new StreamEntity())->getStreamsByTwitchStreamId($twitch_stream_ids) as $stream)
+			{
+				if (isset($ids[$stream->getStreamId()]))
+				{
+					continue;
+				}
+
+				$following = new Following();
+				$following->setUserId($user->getUserId());
+				$following->setStreamId($stream->getStreamId());
+
+				$following->createEntity()->store();
+				$ids[$stream->getStreamId()] = true;
+			}
+
+			if ($cursor == '')
+			{
+				break;
+			}
+		}
 	}
 }

@@ -12,6 +12,7 @@ use Porthorian\StreamStats\Modules\Twitch\ClientAuth as TwitchAuth;
 use Porthorian\StreamStats\Modules\Twitch\Client as TwitchClient;
 use Porthorian\StreamStats\Modules\Twitch\TwitchException;
 use Porthorian\StreamStats\Modules\Users\UserEntity;
+use Porthorian\StreamStats\Controllers\StreamsController;
 
 class CallbackController
 {
@@ -54,13 +55,27 @@ class CallbackController
 			$user->setTwitchUserId($twitch_user['id']);
 			$user->setEmail($twitch_user['email']);
 			$user->setUsername($twitch_user['login']);
+			$user->setAccessToken($auth->getAccessToken());
+			$user->setRefreshToken($auth->getRefreshToken());
 
 			$user = $user->createEntity()->store();
+			StreamsController::populateInitialStreamsUserMap($client, $user);
 		}
 
-		$user->setAccessToken($auth->getAccessToken());
-		$user->setRefreshToken($auth->getRefreshToken());
-		$user->createEntity()->update(['access_token', 'refresh_token']);
+		$update_params = [];
+		if ($user->getAccessToken() != $auth->getAccessToken())
+		{
+			$user->setAccessToken($auth->getAccessToken());
+			$update_params[] = 'access_token';
+		}
+
+		if ($user->getRefreshToken() != $auth->getRefreshToken())
+		{
+			$user->setRefreshToken($auth->getRefreshToken());
+			$update_params[] = 'refresh_token';
+		}
+
+		if (!empty($update_params)) $user->createEntity()->update($params);
 
 		Session::start();
 		Session::set('user_id_logged_in', $user->getUserId());
