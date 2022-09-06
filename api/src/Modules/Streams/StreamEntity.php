@@ -51,7 +51,7 @@ class StreamEntity extends DBEntity
 		{
 			$middle_index = floor($length / 2);
 
-			return floor(($viewers[$middle_index] + $viewers[$middle_index - 1]) / 2);
+			return (int)floor(($viewers[$middle_index] + $viewers[$middle_index - 1]) / 2);
 		}
 
 		return $viewers[floor($length / 2)];
