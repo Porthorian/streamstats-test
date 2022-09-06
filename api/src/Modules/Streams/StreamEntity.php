@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Porthorian\StreamStats\Modules\Streams;
 
+use InvalidArgumentException;
 use Porthorian\DBEntity\DBEntity;
 use Porthorian\PDOWrapper\DBWrapper;
 use Porthorian\StreamStats\Util\DataFormat;
@@ -54,6 +55,26 @@ class StreamEntity extends DBEntity
 		}
 
 		return $viewers[floor($length / 2)];
+	}
+
+	public function getTop100StreamsByViewer(string $order) : array
+	{
+		$order = strtoupper($order);
+		if (!in_array($order, ['ASC', 'DESC']))
+		{
+			throw new InvalidArgumentException('Invalid order given. Only ASC and DESC allowed.');
+		}
+
+		$output = [];
+		foreach (DBWrapper::PResult('SELECT * FROM streams ORDER BY viewers '.$order.' LIMIT 100') as $result)
+		{
+			$stream = new Stream();
+			$stream->setModelProperties($result);
+			$stream->setInitializedFlag(true);
+			$output[] = $stream;
+		}
+
+		return $output;
 	}
 
 	////

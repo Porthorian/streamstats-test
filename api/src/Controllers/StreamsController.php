@@ -26,12 +26,14 @@ class StreamsController
 	public function getTop100StreamsByViewerCount(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
 		$params = $request->getQueryParams();
-		$order = $params['order'] ?? 'desc';
-		if (!in_array($order, ['desc', 'asc']))
+
+		$output = [];
+		foreach ((new StreamEntity())->getTop100StreamsByViewer($params['order'] ?? 'DESC') as $stream)
 		{
-			return ResponseHelper::errorMessage($response, 'Invalid order given. Only asc and desc allowed.');
+			$output[] = $stream->toPublicArray();
 		}
-		return $response;
+
+		return ResponseHelper::success($response, $output);
 	}
 
 	/**
