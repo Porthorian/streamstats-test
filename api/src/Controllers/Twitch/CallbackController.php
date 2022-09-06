@@ -47,8 +47,7 @@ class CallbackController
 
 		$twitch_user = $client->getUsers()[0];
 
-		$entity = new UserEntity();
-		$user = $entity->findByTwitchId($twitch_user['id']);
+		$user = (new UserEntity())->findByTwitchId($twitch_user['id']);
 		if (!$user->isInitialized())
 		{
 			$user->reset();
@@ -56,8 +55,7 @@ class CallbackController
 			$user->setEmail($twitch_user['email']);
 			$user->setUsername($twitch_user['login']);
 
-			$entity = $user->createEntity();
-			$user = $entity->store();
+			$user = $user->createEntity()->store();
 		}
 
 		$user->setAccessToken($auth->getAccessToken());
