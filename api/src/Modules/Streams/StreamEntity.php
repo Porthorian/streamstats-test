@@ -43,6 +43,11 @@ class StreamEntity extends DBEntity
 			$viewers[] = $result['viewers'];
 		}
 
+		if (empty($viewers))
+		{
+			return 0;
+		}
+
 		$length = count($viewers);
 		/**
 		 * Binary search the median number

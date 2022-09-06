@@ -11,7 +11,10 @@ class ResponseHelper
 	public static function success(ResponseInterface $response, array $array, int $code = 200) : ResponseInterface
 	{
 		$response->getBody()->write(JsonWrapper::json(['data' => $array]));
-		return $response->withHeader('Content-type', 'application/json')->withStatus($code);
+		return self::cors($response)
+			->withHeader('Content-type', 'application/json')
+			->withHeader('Content-Length', $response->getBody()->getSize())
+			->withStatus($code);
 	}
 
 	public static function error(ResponseInterface $response, int $code = 400, array $array = []) : ResponseInterface
@@ -19,14 +22,24 @@ class ResponseHelper
 		if (!empty($array))
 		{
 			$response->getBody()->write(JsonWrapper::json($array));
-			$response = $response->withHeader('Content-type', 'application/json');
+			$response = $response
+				->withHeader('Content-type', 'application/json')
+				->withHeader('Content-Length', $response->getBody()->getSize());
 		}
 
-		return $response->withStatus($code);
+		return self::cors($response)->withStatus($code);
 	}
 
 	public static function errorMessage(ResponseInterface $response, string $message, int $code = 400) : ResponseInterface
 	{
 		return self::error($response, $code, ['message' => $message]);
+	}
+
+	private static function cors(ResponseInterface $response) : ResponseInterface
+	{
+		return $response
+			->withHeader('Access-Control-Allow-Origin', 'http://localhost:8080')
+			->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+			->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 	}
 }
