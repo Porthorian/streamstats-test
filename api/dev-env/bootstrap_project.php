@@ -36,7 +36,7 @@ function generateSettings(DatabaseModel $model) : void
 	];
 
 	var_dump($settings);
-	file_put_contents(__DIR__.'/../settings.json', json_encode($settings));
+	file_put_contents(__DIR__.'/../settings.json', json_encode($settings, JSON_PRETTY_PRINT));
 }
 
 function importSchema() : void
