@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Porthorian\StreamStats\Modules\Streams\StreamEntity;
 use Porthorian\StreamStats\Modules\Streams\FollowingEntity;
+use Porthorian\StreamStats\Modules\Streams\Tags\StreamTagEntity;
 use Porthorian\StreamStats\Util\ResponseHelper;
 use Porthorian\StreamStats\Session;
 
@@ -69,6 +70,8 @@ class StreamsController
 	 */
 	public function getTagsSharedBetweenFollowedStreams(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
-		return $response;
+		return ResponseHelper::success($response, array_map(function ($tag) {
+			return $tag->toPublicArray();
+		},(new StreamTagEntity())->getSharedTagsFromFollowingToTop1000(Session::get('user_id_logged_in'))));
 	}
 }
