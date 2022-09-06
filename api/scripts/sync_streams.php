@@ -32,6 +32,7 @@ function syncStreams(TwitchClient $twitch)
 	$cursor = '';
 	DBWrapper::startTransaction();
 	$ids = [];
+	$last_ran = DBWrapper::PSingle('SELECT MAX(last_seen) AS last_ran FROM streams')['last_ran'];
 	while (true)
 	{
 		$streams = $twitch->getStreams(null, null, $cursor);
@@ -66,6 +67,9 @@ function syncStreams(TwitchClient $twitch)
 				continue;
 			}
 
+			/**
+			 * there may be duplicate or missing streams, as viewers join and leave streams
+			 */
 			if (isset($ids[$data['id']]))
 			{
 				continue;
@@ -88,5 +92,6 @@ function syncStreams(TwitchClient $twitch)
 		}
 	}
 
+	DBWrapper::factory('DELETE FROM streams WHERE last_seen < DATE_SUB(?, INTERVAL 20 MINUTE)', [$last_ran]);
 	DBWrapper::commitTransaction();
 }

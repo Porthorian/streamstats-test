@@ -31,6 +31,7 @@ function syncGames(TwitchClient $twitch) : void
 	$cursor = '';
 	DBWrapper::startTransaction();
 	$ids = [];
+	$last_ran = DBWrapper::PSingle('SELECT MAX(last_seen) AS last_ran FROM games')['last_ran'];
 	while (true)
 	{
 		$games = $twitch->getTopGames($cursor);
@@ -76,6 +77,7 @@ function syncGames(TwitchClient $twitch) : void
 			break;
 		}
 	}
+	DBWrapper::factory('DELETE FROM games WHERE last_seen < DATE_SUB(?, INTERVAL 20 MINUTE)', [$last_ran]);
 	DBWrapper::commitTransaction();
 }
 
