@@ -10,6 +10,8 @@ use Porthorian\StreamStats\Session;
 use Porthorian\StreamStats\Env\Config;
 use Porthorian\StreamStats\Modules\Twitch\ClientAuth as TwitchAuth;
 use Porthorian\StreamStats\Modules\Twitch\Client as TwitchClient;
+use Porthorian\StreamStats\Modules\Twitch\TwitchException;
+use Porthorian\StreamStats\Modules\Users\UserEntity;
 
 class CallbackController
 {
@@ -21,18 +23,49 @@ class CallbackController
 			return $response->withStatus(403);
 		}
 
-		echo "Loading...";
-		$auth = new TwitchAuth(Config::getTwitchClientId(), Config::getTwitchClientSecret(), $params['code']);
-		if (!$auth->isAuthenticated())
+		$auth = new TwitchAuth(Config::getTwitchClientId(), Config::getTwitchClientSecret());
+		$auth->setCode($params['code'] ?? 'bad token');
+		try
 		{
 			$auth->authenticate();
 		}
+		catch (TwitchException $e)
+		{
+			return $response->withStatus(403);
+		}
+
+		try
+		{
+			$auth->validate();
+		}
+		catch (TwitchException $e)
+		{
+			return $response->withStatus(403);
+		}
+
 		$client = new TwitchClient($auth);
 
-		echo "<pre>";
-		var_dump($client->getUsers()[0]);
-		echo "</pre>";
-		return $response;
+		$twitch_user = $client->getUsers()[0];
+
+		$entity = new UserEntity();
+		$user = $entity->findByTwitchId($twitch_user['id']);
+		if (!$user->isInitialized())
+		{
+			$user->reset();
+			$user->setTwitchUserId($twitch_user['id']);
+			$user->setEmail($twitch_user['email']);
+			$user->setUsername($twitch_user['login']);
+
+			$entity = $user->createEntity();
+			$entity->store();
+		}
+
+		Session::start();
+		Session::set('user_logged_in', $user->toArray());
+		Session::set('twitch_bearer_token', $auth->getAccessToken());
+
+		$response->getBody()->write('logged in');
+		return $response->withStatus(200);
 	}
 
 	public function sendRedirect(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface

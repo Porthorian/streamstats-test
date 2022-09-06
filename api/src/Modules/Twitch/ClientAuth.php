@@ -14,24 +14,19 @@ class ClientAuth
 	private string $client_secret;
 
 	private string $bearer_token;
+	private string $access_token;
+
 	private string $code = '';
+	private string $refresh_token = '';
 
 	private bool $authenticated = false;
 
 	private const BEARER_TOKEN_KEY = 'twitch:bearer_token';
 
-	public function __construct(string $client_id, string $client_secret, string $code = '')
+	public function __construct(string $client_id, string $client_secret)
 	{
 		$this->client_id = $client_id;
 		$this->client_secret = $client_secret;
-		$this->code = $code;
-
-		$bearer_token = Cache::get($this->getCacheKey());
-		if ($bearer_token !== null)
-		{
-			$this->setBearerToken($bearer_token);
-			return;
-		}
 	}
 
 	public function authenticate() : void
@@ -51,8 +46,23 @@ class ClientAuth
 			throw new TwitchException('Unsupported token type. Expected bearer token.');
 		}
 
-		Cache::set($this->getCacheKey(), $decoded['access_token'], (int)($decoded['expires_in'] - ($decoded['expires_in'] / 10)));
-		$this->setBearerToken($decoded['access_token']);
+		$this->setAccessToken($decoded['access_token']);
+		$this->setRefreshToken($decoded['refresh_token']);
+		Cache::set($this->getCacheKey(), $decoded['refresh_token'], (int)($decoded['expires_in'] * 2));
+	}
+
+	public function validate() : void
+	{
+		try
+		{
+			$response = (new GuzzleClient())->get('https://id.twitch.tv/oauth2/validate', ['headers' => [
+				'Authorization' => $this->getBearerToken(),
+			]]);
+		}
+		catch (Exception $e)
+		{
+			throw new TwitchException('Failed to validate twitch token.', $e);
+		}
 	}
 
 	public function isAuthenticated() : bool
@@ -70,17 +80,33 @@ class ClientAuth
 		return $this->bearer_token;
 	}
 
-	private function setBearerToken(string $token)
+	public function getAccessToken() : string
 	{
+		return $this->access_token;
+	}
+
+	public function setCode(string $code) : void
+	{
+		$this->code = $code;
+	}
+
+	public function setRefreshToken(string $token) : void
+	{
+		$this->refresh_token = $token;
+	}
+
+	public function setAccessToken(string $token)
+	{
+		$this->access_token = $token;
 		$this->bearer_token = 'Bearer '.$token;
 		$this->authenticated = true;
 	}
 
 	private function getCacheKey() : string
 	{
-		if ($this->code != '')
+		if ($this->access_token != '')
 		{
-			return self::BEARER_TOKEN_KEY.':'.$this->code;
+			return self::BEARER_TOKEN_KEY.':'.$this->access_token;
 		}
 
 		return self::BEARER_TOKEN_KEY;
@@ -105,6 +131,17 @@ class ClientAuth
 			$params['code'] = $this->code;
 			$params['grant_type'] = 'authorization_code';
 			$params['redirect_uri'] = Client::generateRedirectUri();
+			return $params;
+		}
+
+		/**
+		 * Our access token has expired.
+		 * Lets refresh it.
+		 */
+		if ($this->refresh_token != '')
+		{
+			$params['grant_type'] = 'refresh_token';
+			$params['refresh_token'] = $this->refresh_token;
 		}
 
 		return $params;
