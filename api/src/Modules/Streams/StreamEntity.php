@@ -77,6 +77,29 @@ class StreamEntity extends DBEntity
 		return $output;
 	}
 
+	public function getTotalStreamsByStartTimeRounded() : array
+	{
+		$results = DBWrapper::PResult('
+			SELECT DATE_ADD(
+				DATE_FORMAT(date_started, "%Y-%m-%d %H:00:00"), INTERVAL IF(
+					MINUTE(date_started) < 30, 0, 1) HOUR
+				) AS rounded_start, COUNT(*) AS total_streams
+			FROM streams
+			GROUP BY rounded_start
+			ORDER BY rounded_start DESC
+		');
+
+		$output = [];
+		foreach ($results as $result)
+		{
+			$output[] = [
+				'date_started'  => $result['rounded_start'],
+				'total_streams' => $result['total_streams']
+			];
+		}
+		return $output;
+	}
+
 	////
 	// Interface routines
 	////

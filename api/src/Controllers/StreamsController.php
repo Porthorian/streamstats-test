@@ -41,7 +41,7 @@ class StreamsController
 	 */
 	public function getTotalStreamsByStartTime(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
-		return $response;
+		return ResponseHelper::success($response, (new StreamEntity())->getTotalStreamsByStartTimeRounded());
 	}
 
 	/**
