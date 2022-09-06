@@ -5,6 +5,7 @@
 	<arg name="extensions" value="php"/>
 
 	<file>.</file>
+	<exclude-pattern>*/local/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/.phpdoc/*</exclude-pattern>
 	<exclude-pattern>*/.phpunit.cache/*</exclude-pattern>
