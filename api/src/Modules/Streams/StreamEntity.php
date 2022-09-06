@@ -100,9 +100,6 @@ class StreamEntity extends DBEntity
 		return $output;
 	}
 
-	/**
-	 * Is this even needed?
-	 */
 	public function getTop1000Streams() : array
 	{
 		$results = DBWrapper::PResult('

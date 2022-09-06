@@ -35,6 +35,31 @@ class FollowingEntity extends DBEntity
 		return $output;
 	}
 
+	public function getLowestViewerCountToMakeToTop1000(int $user_id) : int
+	{
+		$streams = (new StreamEntity())->getTop1000Streams();
+		$last_stream = $streams[count($streams) - 1];
+		unset($streams);
+
+		$result = DBWrapper::PSingle('
+			SELECT streams.* FROM users_following_streams
+			LEFT JOIN streams
+				ON streams.STREAMID = users_following_streams.STREAMID
+			ORDER BY streams.viewers ASC
+			LIMIT 1
+		');
+
+		$number = $last_stream->getViewers() - $result['viewers'];
+		// Pretty good taste for this you.
+		// You following everything in the top 1000.
+		if ($number < 0)
+		{
+			return 0;
+		}
+
+		return $number;
+	}
+
 	////
 	// Interface routines
 	////

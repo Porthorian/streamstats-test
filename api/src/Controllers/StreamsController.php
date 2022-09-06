@@ -60,7 +60,7 @@ class StreamsController
 	 */
 	public function getCalcLowestViewerToMakeTop1000(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
-		return $response;
+		return ResponseHelper::success($response, ['viewers_needed' => (new FollowingEntity())->getLowestViewerCountToMakeToTop1000(Session::get('user_id_logged_in'))]);
 	}
 
 	/**
