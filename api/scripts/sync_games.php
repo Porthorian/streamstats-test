@@ -24,6 +24,7 @@ $twitch_client = new TwitchClient($auth);
 echo "Syncing Games".PHP_EOL;
 syncGames($twitch_client);
 echo "Done Syncing Games".PHP_EOL;
+exit(0);
 
 function syncGames(TwitchClient $twitch) : void
 {
