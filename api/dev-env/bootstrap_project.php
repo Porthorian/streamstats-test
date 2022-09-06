@@ -57,7 +57,7 @@ function importSchema() : void
 
 function waitAndConnectToDB() : DatabaseModel
 {
-	$model = new DatabaseModel('streamstats', getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASS'));
+	$model = new DatabaseModel('streamstats', getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASS'), 'utf8mb4');
 	$model->setPort((int)getenv('DB_PORT'));
 
 	DBPool::addPool($model);
