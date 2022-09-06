@@ -12,6 +12,7 @@ class GamesController
 {
 	/**
 	 * Total number of streams for each game
+	 * aggregate via query
 	 */
 	public function getTotalStreamsForEachGame(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
@@ -20,6 +21,7 @@ class GamesController
 
 	/**
 	 * Top games by viewer count for each game
+	 * aggregate via query
 	 */
 	public function getTopGamesByViewerCount(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{

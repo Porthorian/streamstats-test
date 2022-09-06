@@ -12,6 +12,7 @@ class StreamsController
 {
 	/**
 	 * Median number of viewers for all streams
+	 * aggregated via application layer.
 	 */
 	public function getMedianOfViewers(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
@@ -22,6 +23,7 @@ class StreamsController
 
 	/**
 	 * List of top 100 streams by viewer count that can be sorted asc & desc
+	 * aggregate via query
 	 */
 	public function getTop100StreamsByViewerCount(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
@@ -38,6 +40,7 @@ class StreamsController
 
 	/**
 	 * Total number of streams by their start time (rounded to the nearest hour)
+	 * aggregate via query
 	 */
 	public function getTotalStreamsByStartTime(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
@@ -46,6 +49,7 @@ class StreamsController
 
 	/**
 	 * Which of the top 1000 streams is the logged in user following?
+	 * aggregate via query
 	 */
 	public function getTop1000StreamsFollowingByUser(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
@@ -54,6 +58,7 @@ class StreamsController
 
 	/**
 	 * How many viewers does the lowest viewer count stream that the logged in user is following need to gain in order to make it into the top 1000?
+	 * aggregate via application
 	 */
 	public function getCalcLowestViewerToMakeTop1000(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
@@ -62,6 +67,7 @@ class StreamsController
 
 	/**
 	 * Which tags are shared between the user followed streams and the top 1000 streams? Also make sure to translate the tags to their respective name?
+	 * aggregate via query
 	 */
 	public function getTagsSharedBetweenFollowedStreams(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
