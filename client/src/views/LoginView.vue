@@ -40,7 +40,7 @@ export default {
       setTimeout(this.refresh, 1000)
     },
     refresh() {
-      let timeout = setTimeout(this.refresh, 1000)
+      let timeout = setTimeout(this.refresh, 3000)
       axios.get('/user')
         .then((res) => {
           this.$store.dispatch('login', res['data']['data'])
@@ -51,7 +51,7 @@ export default {
           iterations++
           console.log(err)
 
-          if (iterations >= 15) {
+          if (iterations >= 200) {
             clearTimeout(timeout)
           }
         })
