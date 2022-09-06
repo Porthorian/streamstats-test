@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      Top Games by viewer count
+      Top Games by Viewer
     </v-card-title>
     <v-data-table
       :headers="headers"

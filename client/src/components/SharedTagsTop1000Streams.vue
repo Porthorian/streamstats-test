@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      Top 1000 Streams you are Following
+      Your Shared Tags with Top 1000 Streams
     </v-card-title>
     <v-data-table
       :headers="headers"
@@ -16,14 +16,12 @@
 <script>
 import axios from 'axios'
 export default {
-  name: 'Top1000StreamsUserFollowing',
+  name: 'SharedTagsTop1000Streams',
 
   data: () => ({
     headers: [
-      { text: 'Streamer', value: 'streamer' },
-      { text: 'Title', value: 'title' },
-      { text: 'Date Started', value: 'date_started'},
-      { text: 'Viewers', value: 'viewers' }
+      { text: 'Name', value: 'name' },
+      { text: 'Description', value: 'description' },
     ],
     items: [],
     loading: true
@@ -31,14 +29,12 @@ export default {
 
   async created() {
     try {
-      const response = await axios.get('http://localhost/streams/top1000_following')
+      const response = await axios.get('http://localhost/streams/tags_shared')
       const data = response['data']['data']
       for (const item of data) {
         this.items.push({
-          streamer: item.streamer_name,
-          title: item.stream_title,
-          date_started: item.date_started,
-          viewers: item.viewers
+          name: item.name,
+          description: item.description
         });
       }
       this.loading = false
