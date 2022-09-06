@@ -10,6 +10,7 @@ class Game extends Model
 	protected int $GAMEID = 0;
 	protected string $TWITCHGAMEID = '';
 	protected string $game_name = '';
+	protected string $last_seen = '0000-00-00 00:00:00';
 
 	public function getGameId() : int
 	{
@@ -41,6 +42,16 @@ class Game extends Model
 		$this->game_name = $game_name;
 	}
 
+	public function getLastSeen() : string
+	{
+		return $this->last_seen;
+	}
+
+	public function setLastSeen(string $timestamp) : void
+	{
+		$this->last_seen = $timestamp;
+	}
+
 	////
 	// Interface routines
 	////
@@ -60,13 +71,16 @@ class Game extends Model
 		return [
 			'GAMEID' => $this->getGameId(),
 			'TWITCHGAMEID' => $this->getTwitchGameId(),
-			'game_name' => $this->getGameName()
+			'game_name' => $this->getGameName(),
+			'last_seen' => $this->getLastSeen()
 		];
 	}
 
 	public function toPublicArray() : array
 	{
-		return $this->toArray();
+		$array = $this->toArray();
+		unset($array['last_seen']);
+		return $array;
 	}
 
 	public function getEntityPath() : string
