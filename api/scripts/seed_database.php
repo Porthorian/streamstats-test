@@ -15,3 +15,5 @@ if ($exit != 0)
 	throw new Exception('Sync streams failed.');
 }
 
+passthru("php ${location}/sync_user_following.php");
+
