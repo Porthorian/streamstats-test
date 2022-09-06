@@ -34,6 +34,10 @@ function generateSettings(DatabaseModel $model) : void
 		'client_id' => 'wok76egoc5im83o5zmhi2eqnpx9rpf',
 		'client_secret' => 'k762s72345k0xzi4k3emolb5e9p2rd'
 	];
+	$settings['redis'] = [
+		'host' => getenv('REDIS_HOST'),
+		'port' => (int)getenv('REDIS_PORT')
+	];
 
 	var_dump($settings);
 	file_put_contents(__DIR__.'/../settings.json', json_encode($settings, JSON_PRETTY_PRINT));

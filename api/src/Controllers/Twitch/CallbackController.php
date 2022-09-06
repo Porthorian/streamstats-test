@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Porthorian\StreamStats\Session;
 use Porthorian\StreamStats\Env\Environment;
 use Porthorian\StreamStats\Env\Config;
+use Porthorian\StreamStats\Cache\Cache;
 
 class CallbackController
 {

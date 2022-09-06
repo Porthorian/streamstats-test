@@ -13,6 +13,8 @@ services:
       DB_PORT: 3306
       DB_USER: root
       DB_PASS: test_password
+      REDIS_HOST: stream_stats_redis
+      REDIS_PORT: 6379
     volumes:
       - ./:/home/app:rw
     networks:
