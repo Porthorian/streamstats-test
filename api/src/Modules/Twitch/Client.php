@@ -255,13 +255,7 @@ class Client
 
 	public static function generateRedirectUri() : string
 	{
-		$redirect_uri = 'https://api.streamstats.kriekon.com/twitch/callback';
-		if (Environment::isDevEnv())
-		{
-			$redirect_uri = 'http://localhost/twitch/callback';
-		}
-
-		return $redirect_uri;
+		return Config::getConfig()->get('redirect_url');
 	}
 
 	////

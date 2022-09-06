@@ -38,6 +38,11 @@ class FollowingEntity extends DBEntity
 	public function getLowestViewerCountToMakeToTop1000(int $user_id) : array
 	{
 		$streams = (new StreamEntity())->getTop1000Streams();
+		if (empty($streams))
+		{
+			return [new Stream(), 0];
+		}
+
 		$last_stream = $streams[count($streams) - 1];
 		unset($streams);
 

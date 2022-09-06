@@ -7,6 +7,7 @@ namespace Porthorian\StreamStats;
 
 use Porthorian\Utility\Time\TimeCodes;
 use Porthorian\StreamStats\Env\Environment;
+use Porthorian\StreamStats\Env\Config;
 
 class Session
 {
@@ -15,7 +16,7 @@ class Session
 		$sessioninfo = [
 			'lifetime' => TimeCodes::ONE_HOUR, // Expire the User Session after 1 hour.
 			'path'     => '/',
-			'domain'   => Environment::isDevEnv() ? 'localhost' : '.streamstats.kriekon.com',
+			'domain'   => Config::getConfig()->get('cookie_domain'),
 			'secure'   => Environment::isDevEnv() ? false : true,
 			'httponly' => true,
 			'samesite' => 'LAX'

@@ -38,7 +38,9 @@ function generateSettings(DatabaseModel $model) : void
 		'host' => getenv('REDIS_HOST'),
 		'port' => (int)getenv('REDIS_PORT')
 	];
-
+	$settings['cookie_domain'] = 'localhost';
+	$settings['home_url'] = 'http://localhost:8080';
+	$settings['redirect_url'] = 'http://localhost/twitch/callback';
 	var_dump($settings);
 	file_put_contents(__DIR__.'/../settings.json', json_encode($settings, JSON_PRETTY_PRINT));
 }
