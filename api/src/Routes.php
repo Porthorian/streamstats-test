@@ -23,6 +23,7 @@ class Routes
 	{
 		$this->twitchIntegration();
 		$this->gamesRoutes();
+		$this->streamsRoutes();
 	}
 
 	private function twitchIntegration() : void
