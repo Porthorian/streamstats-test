@@ -5,7 +5,6 @@ namespace Porthorian\StreamStats\Modules\Games;
 
 use Porthorian\DBEntity\DBEntity;
 use Porthorian\PDOWrapper\DBWrapper;
-use Porthorian\PDOWrapper\Models\DBResult;
 use Porthorian\StreamStats\Util\DataFormat;
 
 class GameEntity extends DBEntity
@@ -32,9 +31,9 @@ class GameEntity extends DBEntity
 		return $output;
 	}
 
-	public function getTotalStreamsForEachGame() : DBResult
+	public function getTotalStreamsForEachGame() : array
 	{
-		return DBWrapper::PResult('
+		$results = DBWrapper::PResult('
 			SELECT streams.GAMEID, games.game_name, COUNT(*) AS total_streams
 			FROM streams
 			LEFT JOIN games
@@ -42,11 +41,22 @@ class GameEntity extends DBEntity
 			WHERE streams.GAMEID IS NOT NULL
 			GROUP BY streams.GAMEID, games.game_name ORDER BY total_streams DESC
 		');
+
+		$output = [];
+		foreach ($results as $stat)
+		{
+			$output[] = [
+				'GAMEID' => $stat['GAMEID'],
+				'name' => $stat['game_name'],
+				'total_streams' => $stat['total_streams']
+			];
+		}
+		return $output;
 	}
 
-	public function getTopGamesByViewerCount() : DBResult
+	public function getTopGamesByViewerCount() : array
 	{
-		return DBWrapper::PResult('
+		$results = DBWrapper::PResult('
 			SELECT streams.GAMEID, games.game_name, SUM(streams.viewers) AS total_viewers
 			FROM streams
 			LEFT JOIN games
@@ -55,6 +65,18 @@ class GameEntity extends DBEntity
 			GROUP BY streams.GAMEID, games.game_name
 			ORDER BY total_viewers DESC;
 		');
+
+		$output = [];
+		foreach ($results as $stat)
+		{
+			$output[] = [
+				'GAMEID'        => $stat['GAMEID'],
+				'name'          => $stat['game_name'],
+				'total_viewers' => $stat['total_viewers']
+			];
+		}
+
+		return $output;
 	}
 
 	public function getModelPath() : string

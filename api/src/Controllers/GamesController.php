@@ -15,18 +15,7 @@ class GamesController
 	 */
 	public function getTotalStreamsForEachGame(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
-		$game = new GameEntity();
-		$output = [];
-		foreach ($game->getTotalStreamsForEachGame() as $stat)
-		{
-			$output[] = [
-				'GAMEID' => $stat['GAMEID'],
-				'name' => $stat['game_name'],
-				'total_streams' => $stat['total_streams']
-			];
-		}
-
-		return ResponseHelper::success($response, $output);
+		return ResponseHelper::success($response, (new GameEntity())->getTotalStreamsForEachGame());
 	}
 
 	/**
@@ -34,17 +23,6 @@ class GamesController
 	 */
 	public function getTopGamesByViewerCount(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
-		$game = new GameEntity();
-		$output = [];
-		foreach ($game->getTopGamesByViewerCount() as $stat)
-		{
-			$output[] = [
-				'GAMEID'        => $stat['GAMEID'],
-				'name'          => $stat['game_name'],
-				'total_viewers' => $stat['total_viewers']
-			];
-		}
-
-		return ResponseHelper::success($response, $output);
+		return ResponseHelper::success($response, (new GameEntity())->getTopGamesByViewerCount());
 	}
 }
