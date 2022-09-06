@@ -33,3 +33,20 @@ CREATE TABLE streams
         REFERENCES games(GAMEID)
         ON DELETE CASCADE
 );
+
+CREATE TABLE users_following_streams
+(
+    FOLLOWINGID     INT(10) UNSIGNED    NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    USERID          INT(10) UNSIGNED    NOT NULL,
+    STREAMID        INT(10) UNSIGNED    NOT NULL,
+
+    CONSTRAINT fk_user_following_USERID
+        FOREIGN KEY (USERID)
+        REFERENCES users(USERID)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_user_following_STREAMID
+        FOREIGN KEY (STREAMID)
+        REFERENCES streams(STREAMID)
+        ON DELETE CASCADE
+);

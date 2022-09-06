@@ -9,5 +9,9 @@ if ($exit != 0)
 {
 	throw new Exception('Sync games failed.');
 }
-passthru("php ${location}/sync_streams.php");
+$exit = passthru("php ${location}/sync_streams.php");
+if ($exit != 0)
+{
+	throw new Exception('Sync streams failed.');
+}
 
