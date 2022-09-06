@@ -9,16 +9,16 @@ use Porthorian\StreamStats\Routes;
 use Porthorian\StreamStats\Session;
 use Porthorian\Utility\Key\Generator;
 
-$app = AppFactory::create();
-$routes = new Routes($app);
-$routes->generateRoutes();
-
 Session::configure();
 Session::start();
 if (!Session::has('csrf_token'))
 {
 	Session::set('csrf_token', Generator::generateToken(45));
 }
+
+$app = AppFactory::create();
+$routes = new Routes($app);
+$routes->generateRoutes();
 
 $app->run();
 
