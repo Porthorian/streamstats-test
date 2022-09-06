@@ -6,7 +6,7 @@ namespace Porthorian\StreamStats\Controllers;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Porthorian\StreamStats\Modules\Streams\StreamEntity;
-use Porthorian\Utility\Json\JsonWrapper;
+use Porthorian\StreamStats\Util\ResponseHelper;
 
 class StreamsController
 {
@@ -17,8 +17,7 @@ class StreamsController
 	{
 		$median = (new StreamEntity())->getMedianViewersForAllStreams();
 
-		$response->getBody()->write(JsonWrapper::json(['data' => ['median' => $median]]));
-		return $response->withHeader('Content-type', 'application/json')->withStatus(200);
+		return ResponseHelper::success($response, ['median' => $median]);
 	}
 
 	/**
@@ -26,6 +25,12 @@ class StreamsController
 	 */
 	public function getTop100StreamsByViewerCount(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
+		$params = $request->getQueryParams();
+		$order = $params['order'] ?? 'desc';
+		if (!in_array($order, ['desc', 'asc']))
+		{
+			return ResponseHelper::errorMessage($response, 'Invalid order given. Only asc and desc allowed.');
+		}
 		return $response;
 	}
 
