@@ -37,7 +37,7 @@ while (true)
 	shuffle($tags);
 	foreach ($tags as $data)
 	{
-		echo "Tag): ".$data['tag_id'].' - '.$data['localization_names']['en-us'].PHP_EOL;
+		echo 'Tag '.$data['tag_id'].'): '.$data['localization_names']['en-us'].PHP_EOL;
 		if (isset($found_tags[$data['tag_id']]))
 		{
 			$update_tag = $found_tags[$data['tag_id']];
