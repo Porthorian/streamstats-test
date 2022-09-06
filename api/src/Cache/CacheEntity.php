@@ -37,6 +37,11 @@ abstract class CacheEntity extends Entity
 		return 'streamstats';
 	}
 
+	/**
+	 * Takes all current values inside the model and inserts them into the cache entity
+	 * @throws EntityException - if the insertion query fails some how.
+	 * @return ModelInterface
+	 */
 	public function store() : ModelInterface
 	{
 		$this->initializeModelIfNotSet();
@@ -65,6 +70,14 @@ abstract class CacheEntity extends Entity
 		return $model;
 	}
 
+	/**
+	 * Update the cache entity based on the primary key of the model.
+	 * @param $params - These are the fields that will be pulled from the model
+	 * Ex ['registration_time', 'date_of_birth']
+	 * @throws InvalidArgumentException - If the column does not exist inside the model.
+	 * @throws EntityException
+	 * @return void
+	 */
 	public function update(array $params = []) : void
 	{
 		$this->initializeModelIfNotSet();
@@ -111,14 +124,67 @@ abstract class CacheEntity extends Entity
 		}
 	}
 
+	/**
+	 * Delete the entity based on the primary key of the model.
+	 * @throws EntityException if the model object is not initialized
+	 * @return void
+	 */
 	public function delete() : void
 	{
 		$this->initializeModelIfNotSet();
+		$model = $this->getModel();
+		if (!$model->isInitialized())
+		{
+			throw new EntityException('Unable to delete model '.get_class($model).' as it is not initialized.');
+		}
+
+		if (!Cache::delete($this->getCacheKey()))
+		{
+			return;
+		}
+
+		$this->resetModel();
+
+		if ($this->useEntityCache())
+		{
+			self::deleteCacheItem($this->getCacheKey());
+		}
 	}
 
+	/**
+	 * @param pk_value - Primary key value, mixed types
+	 * @return ModelInterface
+	*/
 	public function find(string|int $pk_value) : ModelInterface
 	{
 		$this->initializeModelIfNotSet();
+
+		if ($this->useEntityCache())
+		{
+			$cache_item = self::getCacheItem($this->getCacheKey($pk_value));
+			if ($cache_item instanceof ModelInterface)
+			{
+				return $cache_item;
+			}
+		}
+
+		$record = Cache::getArray($this->getCacheKey($pk_value));
+
+		$this->resetModel();
+		if ($record === null)
+		{
+			return $this->getModel();
+		}
+
+		$this->setModelProperties($record);
+
+		$model = $this->getModel();
+		if ($this->useEntityCache())
+		{
+			self::setCacheItem($this->getCacheKey(), $model);
+		}
+
+		return $model;
 	}
 
 	protected function setModelProperties(array $record) : void
