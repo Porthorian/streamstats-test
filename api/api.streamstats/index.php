@@ -17,6 +17,8 @@ if (!Session::has('csrf_token'))
 }
 
 $app = AppFactory::create();
+// TODO ADD error middleware
+
 $routes = new Routes($app);
 $routes->generateRoutes();
 
