@@ -1,13 +1,12 @@
-import { createApp } from 'vue'
+import Vue from 'vue'
 import App from './App.vue'
 import vuetify from './plugins/vuetify'
-import { loadFonts } from './plugins/webfontloader'
-import Vue3EasyDataTable from 'vue3-easy-data-table';
-import 'vue3-easy-data-table/dist/style.css';
+import axios from 'axios'
 
-loadFonts()
+axios.defaults.withCredentials = true
+Vue.config.productionTip = false
 
-createApp(App)
-  .use(vuetify)
-  .component('EasyDataTable', Vue3EasyDataTable)
-  .mount('#app')
+new Vue({
+  vuetify,
+  render: h => h(App)
+}).$mount('#app')
