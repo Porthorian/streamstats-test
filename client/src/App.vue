@@ -43,6 +43,13 @@
             <TotalStreamsByDate/>
           </v-col>
         </v-row>
+        <v-row><v-divider></v-divider></v-row>
+        <v-row><h4>User Specific Aggregations</h4></v-row>
+        <v-row>
+          <v-col cols="6">
+            <Top1000StreamsUserFollowing/>
+          </v-col>
+        </v-row>
       </v-container>
     </v-main>
     <v-footer padless>
@@ -62,6 +69,7 @@ import TopGamesByViewerCount from './components/TopGamesByViewerCount'
 import MedianNumberViewers from './components/MedianNumberViewers'
 import Top100Streams from './components/Top100Streams'
 import TotalStreamsByDate from './components/TotalStreamsByDate'
+import Top1000StreamsUserFollowing from './components/Top1000StreamsUserFollowing'
 export default {
   name: 'App',
 
@@ -70,7 +78,8 @@ export default {
     TopGamesByViewerCount,
     MedianNumberViewers,
     Top100Streams,
-    TotalStreamsByDate
+    TotalStreamsByDate,
+    Top1000StreamsUserFollowing
   },
 
   data: () => ({

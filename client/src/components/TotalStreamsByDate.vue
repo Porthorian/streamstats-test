@@ -1,26 +1,26 @@
 <template>
   <v-card>
-      <v-card-title>
-        Total number of Streams
-      </v-card-title>
-      <v-data-table
-        :headers="headers"
-        :items="items"
-        :items-per-page="5"
-        :loading="loading"
-        loading-text="Loading... Please wait"
-      />
-    </v-card>
+    <v-card-title>
+      Total Streams By Start Time
+    </v-card-title>
+    <v-data-table
+      :headers="headers"
+      :items="items"
+      :items-per-page="5"
+      :loading="loading"
+      loading-text="Loading... Please wait"
+    />
+  </v-card>
 </template>
 
 <script>
 import axios from 'axios'
 export default {
-  name: 'TotalStreamsGame',
+  name: 'TotalStreamsByDate',
 
   data: () => ({
     headers: [
-      { text: 'Game', value: 'name' },
+      { text: 'Date', value: 'date_started' },
       { text: 'Total', value: 'total' }
     ],
     items: [],
@@ -29,11 +29,11 @@ export default {
 
   async created() {
     try {
-      const response = await axios.get('http://localhost/games/total')
+      const response = await axios.get('http://localhost/streams/total_start')
       const data = response['data']['data']
       for (const item of data) {
         this.items.push({
-          name: item.name,
+          date_started: item.date_started,
           total: item.total_streams
         });
       }
