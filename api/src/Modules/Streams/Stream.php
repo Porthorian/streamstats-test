@@ -10,7 +10,7 @@ class Stream extends Model
 {
 	protected int $STREAMID = 0;
 	protected string $TWITCHSTREAMID = '';
-	protected int $GAMEID = 0;
+	protected ?int $GAMEID = null;
 	protected string $stream_title = '';
 	protected int $viewers = 0;
 	protected string $date_started = TimeCodes::DATE_ZERO;
@@ -36,12 +36,12 @@ class Stream extends Model
 		$this->TWITCHSTREAMID = $twitch_stream_id;
 	}
 
-	public function getGameId() : int
+	public function getGameId() : ?int
 	{
 		return $this->GAMEID;
 	}
 
-	public function setGameId(int $id) : void
+	public function setGameId(?int $id) : void
 	{
 		$this->GAMEID = $id;
 	}
@@ -56,6 +56,16 @@ class Stream extends Model
 		$this->stream_title = $title;
 	}
 
+	public function getViewers() : int
+	{
+		return $this->viewers;
+	}
+
+	public function setViewers(int $viewers) : void
+	{
+		$this->viewers = $viewers;
+	}
+
 	public function getDateStarted() : string
 	{
 		return $this->date_started;
@@ -63,7 +73,7 @@ class Stream extends Model
 
 	public function setDateStarted(string $date_started) : void
 	{
-		$this->date_started = $date_started;
+		$this->date_started = date(TimeCodes::DATEFORMAT_STANDARD, strtotime($date_started));
 	}
 
 	public function getLastSeen() : string

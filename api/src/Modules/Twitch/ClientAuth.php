@@ -71,13 +71,16 @@ class ClientAuth
 		}
 	}
 
+	// @TODO
 	public function validate() : void
 	{
 		try
 		{
-			$response = (new GuzzleClient())->get('https://id.twitch.tv/oauth2/validate', ['headers' => [
-				'Authorization' => $this->getBearerToken(),
-			]]);
+			$response = (new GuzzleClient())->get('https://id.twitch.tv/oauth2/validate', [
+				'headers' => [
+					'Authorization' => $this->getBearerToken(),
+				]
+			]);
 		}
 		catch (Exception $e)
 		{

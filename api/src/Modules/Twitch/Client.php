@@ -133,6 +133,50 @@ class Client
 		return $decode['data'];
 	}
 
+	public function getStreams(?string $game_id = null, ?string $user_id = null, string &$cursor = '') : array
+	{
+		$this->checkAuthentication();
+
+		try
+		{
+			$params = [
+				'query' => [
+					'first' => 100
+				]
+			];
+
+			if ($game_id !== null)
+			{
+				$params['query']['game_id'] = $game_id;
+			}
+
+			if ($user_id !== null)
+			{
+				$params['query']['user_id'] = $user_id;
+			}
+
+			if ($cursor != '')
+			{
+				$params['query']['after'] = $cursor;
+			}
+
+			$response = $this->guzzle->get('helix/streams', $params);
+		}
+		catch (Exception $e)
+		{
+			throw new TwitchException('Failed to get twitch streams.', $e);
+		}
+
+		$decode = JsonWrapper::decode((string)$response->getBody());
+		if ($decode === null)
+		{
+			throw new TwitchException('Failed to decode streams response. Error: '.JsonWrapper::getLastError());
+		}
+
+		$cursor = $decode['pagination']['cursor'] ?? '';
+		return $decode['data'];
+	}
+
 	////
 	// Public static routines
 	////
