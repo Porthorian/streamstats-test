@@ -57,7 +57,7 @@ class CallbackController
 			$user->setUsername($twitch_user['login']);
 
 			$entity = $user->createEntity();
-			$entity->store();
+			$user = $entity->store();
 		}
 
 		$user->setAccessToken($auth->getAccessToken());
