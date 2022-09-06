@@ -8,7 +8,7 @@
            </v-card-subtitle>
            <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn v-on:click="startAuthentication">
+              <v-btn :loading="loading" v-on:click="startAuthentication">
                 <v-img max-height="20" width="20" src="/twitch.svg"  style="margin-right: 10px"/>
                 Login from Twitch
               </v-btn>
@@ -27,8 +27,15 @@ let iterations = 0
 export default {
   name: 'LoginView',
 
+  data () {
+    return {
+      loading: false
+    }
+  },
+
   methods: {
     startAuthentication () {
+      this.loading = true
       window.open('http://localhost/twitch/redirect', '','scrollbars=yes,menubar=no,height=800,width=640,left=0,top=0,screenX=0,screenY=0,resizable=no,toolbar=no,location=no,status=no')
       setTimeout(this.refresh, 1000)
     },
@@ -38,6 +45,7 @@ export default {
         .then((res) => {
           this.$store.dispatch('login', res['data']['data'])
           clearTimeout(timeout)
+          this.loading = false
         })
         .catch((err) => {
           iterations++
