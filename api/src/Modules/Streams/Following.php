@@ -47,12 +47,12 @@ class Following extends Model
 
 	public function getPrimaryKey() : string|int
 	{
-		return $this->getStreamId();
+		return $this->getFollowingId();
 	}
 
 	public function setPrimaryKey(string|int $pk_value) : void
 	{
-		$this->setStreamId($pk_value);
+		$this->setFollowingId($pk_value);
 	}
 
 	public function toArray() : array
