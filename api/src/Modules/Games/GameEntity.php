@@ -5,6 +5,7 @@ namespace Porthorian\StreamStats\Modules\Games;
 
 use Porthorian\DBEntity\DBEntity;
 use Porthorian\PDOWrapper\DBWrapper;
+use Porthorian\PDOWrapper\Models\DBResult;
 use Porthorian\StreamStats\Util\DataFormat;
 
 class GameEntity extends DBEntity
@@ -29,6 +30,31 @@ class GameEntity extends DBEntity
 			$output[$result['TWITCHGAMEID']] = $game;
 		}
 		return $output;
+	}
+
+	public function getTotalStreamsForEachGame() : DBResult
+	{
+		return DBWrapper::PResult('
+			SELECT streams.GAMEID, games.game_name, COUNT(*) AS total_streams
+			FROM streams
+			LEFT JOIN games
+				ON games.GAMEID = streams.GAMEID
+			WHERE streams.GAMEID IS NOT NULL
+			GROUP BY streams.GAMEID, games.game_name ORDER BY total_streams DESC
+		');
+	}
+
+	public function getTopGamesByViewerCount() : DBResult
+	{
+		return DBWrapper::PResult('
+			SELECT streams.GAMEID, games.game_name, SUM(streams.viewers) AS total_viewers
+			FROM streams
+			LEFT JOIN games
+				ON games.GAMEID = streams.GAMEID
+			WHERE streams.GAMEID IS NOT NULL
+			GROUP BY streams.GAMEID, games.game_name
+			ORDER BY total_viewers DESC;
+		');
 	}
 
 	public function getModelPath() : string

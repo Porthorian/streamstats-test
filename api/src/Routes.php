@@ -41,8 +41,8 @@ class Routes
 	private function gamesRoutes() : void
 	{
 		$this->collector->group('/games', function (RouteCollectorProxyInterface $group) {
+			$group->get('/total', GamesController::class.':getTotalStreamsForEachGame');
 			$group->get('/top', GamesController::class.':getTopGamesByViewerCount');
-			$group->get('/total', GamesController::class.':getTotalNumberStreamsForEachGame');
 		})->add(new Auth());
 	}
 
