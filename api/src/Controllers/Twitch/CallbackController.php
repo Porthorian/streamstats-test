@@ -7,9 +7,9 @@ namespace Porthorian\StreamStats\Controllers\Twitch;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Porthorian\StreamStats\Session;
-use Porthorian\StreamStats\Env\Environment;
 use Porthorian\StreamStats\Env\Config;
-use Porthorian\StreamStats\Cache\Cache;
+use Porthorian\StreamStats\Modules\Twitch\ClientAuth as TwitchAuth;
+use Porthorian\StreamStats\Modules\Twitch\Client as TwitchClient;
 
 class CallbackController
 {
@@ -21,19 +21,23 @@ class CallbackController
 			return $response->withStatus(403);
 		}
 
+		echo "Loading...";
+		$auth = new TwitchAuth(Config::getTwitchClientId(), Config::getTwitchClientSecret(), $params['code']);
+		if (!$auth->isAuthenticated())
+		{
+			$auth->authenticate();
+		}
+		$client = new TwitchClient($auth);
+
 		echo "<pre>";
-		var_dump($request->getQueryParams());
+		var_dump($client->getUsers()[0]);
 		echo "</pre>";
 		return $response;
 	}
 
 	public function sendRedirect(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
-		$redirect_uri = 'https://api.streamstats.kriekon.com/twitch/callback';
-		if (Environment::isDevEnv())
-		{
-			$redirect_uri = 'http://localhost/twitch/callback';
-		}
+		$redirect_uri = TwitchClient::generateRedirectUri();
 
 		$url = 'https://id.twitch.tv/oauth2/authorize?response_type=code&client_id='.Config::getTwitchClientId();
 		$url .= '&redirect_uri='.$redirect_uri;
