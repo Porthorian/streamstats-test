@@ -55,11 +55,12 @@ function syncStreams(TwitchClient $twitch)
 			if (isset($known_streams[$data['id']]))
 			{
 				$update_stream = $known_streams[$data['id']];
+				$update_stream->setStreamerName($data['user_name']);
 				$update_stream->setStreamTitle($data['title']);
 				$update_stream->setViewers($data['viewer_count']);
 				$update_stream->setDateStarted($data['started_at']);
 				$update_stream->setLastSeen(date(TimeCodes::DATEFORMAT_STANDARD));
-				$params = ['stream_title', 'viewers', 'date_started', 'last_seen'];
+				$params = ['streamer_name', 'stream_title', 'viewers', 'date_started', 'last_seen'];
 				if (isset($known_games[$data['game_id']]))
 				{
 					$params[] = 'GAMEID';
