@@ -30,6 +30,10 @@ function generateSettings(DatabaseModel $model) : void
 			'charset' => $model->getCharset()
 		]
 	];
+	$settings['twitch'] = [
+		'client_id' => 'wok76egoc5im83o5zmhi2eqnpx9rpf',
+		'client_secret' => 'k762s72345k0xzi4k3emolb5e9p2rd'
+	];
 
 	var_dump($settings);
 	file_put_contents(__DIR__.'/../settings.json', json_encode($settings));

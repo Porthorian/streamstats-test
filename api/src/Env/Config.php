@@ -83,4 +83,14 @@ class Config
 		self::$databases = $out;
 		return self::$databases;
 	}
+
+	public static function getTwitchClientId() : string
+	{
+		return self::getConfig()->get('twitch')['client_id'];
+	}
+
+	public static function getTwitchClientSecret() : string
+	{
+		return self::getConfig()->get('twitch')['client_secret'];
+	}
 }
