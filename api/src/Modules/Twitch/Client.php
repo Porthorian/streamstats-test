@@ -101,6 +101,38 @@ class Client
 		return $decode['data'];
 	}
 
+	public function getTopGames(string &$cursor = '') : array
+	{
+		$this->checkAuthentication();
+
+		try
+		{
+			$params = [
+				'query' => [
+					'first' => 100
+				]
+			];
+			if ($cursor != '')
+			{
+				$params['query']['after'] = $cursor;
+			}
+			$response = $this->guzzle->get('helix/games/top', $params);
+		}
+		catch (Exception $e)
+		{
+			throw new TwitchException('Failed to get top games from twitch.', $e);
+		}
+
+		$decode = JsonWrapper::decode((string)$response->getBody());
+		if ($decode === null)
+		{
+			throw new TwitchException('Failed to decode games response. Error: '.JsonWrapper::getLastError());
+		}
+
+		$cursor = $decode['pagination']['cursor'] ?? '';
+		return $decode['data'];
+	}
+
 	////
 	// Public static routines
 	////

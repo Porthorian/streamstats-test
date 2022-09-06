@@ -7,6 +7,7 @@ use Exception;
 use GuzzleHttp\Client as GuzzleClient;
 use Porthorian\StreamStats\Cache\Cache;
 use Porthorian\Utility\Json\JsonWrapper;
+use Porthorian\Utility\Time\TimeCodes;
 
 class ClientAuth
 {
@@ -29,6 +30,22 @@ class ClientAuth
 		$this->client_secret = $client_secret;
 	}
 
+	public function cacheClientBearerToken() : void
+	{
+		Cache::set(self::BEARER_TOKEN_KEY, $this->getAccessToken(), TimeCodes::ONE_HOUR);
+	}
+
+	public function setCachedBearerToken() : void
+	{
+		$access_token = Cache::get(self::BEARER_TOKEN_KEY);
+		if ($access_token === null)
+		{
+			return;
+		}
+
+		$this->setAccessToken($access_token);
+	}
+
 	public function authenticate() : void
 	{
 		try
@@ -47,8 +64,11 @@ class ClientAuth
 		}
 
 		$this->setAccessToken($decoded['access_token']);
-		$this->setRefreshToken($decoded['refresh_token']);
-		Cache::set($this->getCacheKey(), $decoded['refresh_token'], (int)($decoded['expires_in'] * 2));
+		if (isset($decoded['refresh_token']))
+		{
+			$this->setRefreshToken($decoded['refresh_token']);
+			Cache::set('twitch:refresh_token:'.$this->getAccessToken(), $decoded['refresh_token'], (int)($decoded['expires_in'] * 2));
+		}
 	}
 
 	public function validate() : void
@@ -100,16 +120,6 @@ class ClientAuth
 		$this->access_token = $token;
 		$this->bearer_token = 'Bearer '.$token;
 		$this->authenticated = true;
-	}
-
-	private function getCacheKey() : string
-	{
-		if ($this->access_token != '')
-		{
-			return self::BEARER_TOKEN_KEY.':'.$this->access_token;
-		}
-
-		return self::BEARER_TOKEN_KEY;
 	}
 
 	private function generateAuthCodeGrantParams() : array
