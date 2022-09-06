@@ -100,6 +100,27 @@ class StreamEntity extends DBEntity
 		return $output;
 	}
 
+	/**
+	 * Is this even needed?
+	 */
+	public function getTop1000Streams() : array
+	{
+		$results = DBWrapper::PResult('
+			SELECT * FROM streams
+			ORDER BY viewers DESC
+			LIMIT 1000
+		');
+		$output = [];
+		foreach ($results as $result)
+		{
+			$stream = new Stream();
+			$stream->setModelProperties($result);
+			$stream->setInitializedFlag(true);
+			$output[] = $stream;
+		}
+		return $output;
+	}
+
 	////
 	// Interface routines
 	////
