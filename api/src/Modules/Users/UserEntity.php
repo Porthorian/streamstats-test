@@ -15,6 +15,11 @@ class UserEntity extends DBEntity
 		return $this->getModel();
 	}
 
+	public function getAllUsers() : UserList
+	{
+		return new UserList();
+	}
+
 	////
 	// Interface routines
 	////
