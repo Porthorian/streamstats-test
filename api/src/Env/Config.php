@@ -8,11 +8,11 @@ use Porthorian\PDOWrapper\Models\DatabaseModel;
 
 class Config
 {
-	private static $_instance = null;
+	private static $instance = null;
 	private static ?array $databases = null;
 
-	private array $_config;
-	private string $_file_path;
+	private array $config;
+	private string $file_path;
 
 	private function __construct(string $file_path)
 	{
@@ -29,36 +29,36 @@ class Config
 		{
 			throw new EnvironmentException('There has been an error parsing the input. JSON Error: ' . JsonWrapper::getLastError());
 		}
-		$this->_config = $decode;
-		$this->_file_path = $file_path;
+		$this->config = $decode;
+		$this->file_path = $file_path;
 	}
 
 	public function get(string $config_option)
 	{
-		if (!isset($this->_config[$config_option]))
+		if (!isset($this->config[$config_option]))
 		{
-			throw new EnvironmentException('Config Option: ' . $config_option . ' does not exist inside the config! See file_path: ' . $this->_file_path);
+			throw new EnvironmentException('Config Option: ' . $config_option . ' does not exist inside the config! See file_path: ' . $this->file_path);
 		}
-		return $this->_config[$config_option];
+		return $this->config[$config_option];
 	}
 
 	public static function getConfig() : self
 	{
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	public static function setConfig(string $file_path) : void
 	{
-		if (self::$_instance !== null)
+		if (self::$instance !== null)
 		{
 			throw new EnvironmentException('Config Instance already exists! Only one instance of a config can exist.');
 		}
-		self::$_instance = new Config($file_path);
+		self::$instance = new Config($file_path);
 	}
 
 	public static function isInitialized() : bool
 	{
-		return self::$_instance !== null;
+		return self::$instance !== null;
 	}
 
 	/**
@@ -72,7 +72,7 @@ class Config
 		}
 		$databases = self::getConfig()->get('databases');
 
-		$out = array();
+		$out = [];
 		foreach ($databases as $database => $attr)
 		{
 			$model = new DatabaseModel($database, $attr['host'], $attr['user'], $attr['password'], $attr['charset'] ?? 'UTF8');
