@@ -15,8 +15,20 @@
     </v-app-bar>
 
     <v-main>
-      <HomeView v-if="isLoggedIn"/>
-      <LoginView v-else/>
+      <template v-if="loading">
+        <v-container fill-height fluid>
+          <v-row align="center" justify="center">
+            <v-progress-circular
+              :size="50"
+              indeterminate
+            ></v-progress-circular>
+          </v-row>
+        </v-container>
+      </template>
+      <template v-else>
+        <HomeView v-if="isLoggedIn"/>
+        <LoginView v-else/>
+      </template>
     </v-main>
     <v-footer padless>
       <v-col
@@ -42,8 +54,16 @@ export default {
     LoginView
   },
 
+  data () {
+    return {
+      loading: true
+    }
+  },
+
   async created() {
+    this.loading = true
     this.login()
+    this.loading = false
   },
 
   computed: {
