@@ -15,7 +15,7 @@ class Session
 		$sessioninfo = [
 			'lifetime' => TimeCodes::ONE_HOUR, // Expire the User Session after 1 hour.
 			'path'     => '/',
-			'domain'   => Environment::isDevEnv() ? 'localhost' : '.kriekon.com',
+			'domain'   => Environment::isDevEnv() ? 'localhost' : '.streamstats.kriekon.com',
 			'secure'   => Environment::isDevEnv() ? false : true,
 			'httponly' => true,
 			'samesite' => 'LAX'
@@ -30,7 +30,7 @@ class Session
 	* @param $default - If the session variable is not set, fall back to a default.
 	* @return mixed
 	*/
-	public static function get(string $key, $default = null)
+	public static function get(string $key, mixed $default = null) : mixed
 	{
 		return $_SESSION[$key] ?? $default;
 	}
@@ -39,7 +39,7 @@ class Session
 	* @param string $key
 	* @param mixed $value
 	*/
-	public static function set(string $key, $value) : void
+	public static function set(string $key, mixed $value) : void
 	{
 		$_SESSION[$key] = $value;
 	}

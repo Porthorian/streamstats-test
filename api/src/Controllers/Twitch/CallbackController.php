@@ -14,6 +14,12 @@ class CallbackController
 {
 	public function login(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
+		$params = $request->getQueryParams();
+		if ((Session::get('csrf_token') ?? 'unknown') != ($params['state'] ?? ''))
+		{
+			return $response->withStatus(403);
+		}
+
 		echo "<pre>";
 		var_dump($request->getQueryParams());
 		echo "</pre>";
