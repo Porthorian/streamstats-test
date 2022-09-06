@@ -7,35 +7,76 @@ use Porthorian\PDOWrapper\DBPool;
 use Porthorian\PDOWrapper\Exception\DatabaseException;
 use Porthorian\PDOWrapper\Models\DatabaseModel;
 use Porthorian\PDOWrapper\DBWrapper;
+use Porthorian\StreamStats\Env\Environment;
 
-$model = new DatabaseModel('streamstats', getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASS'));
-$model->setPort((int)getenv('DB_PORT'));
-
-DBPool::addPool($model);
-
-echo "Authenticating to database server...\n";
-for ($i = 0; $i < 10; $i++)
-{
-	try
-	{
-		DBPool::connectDatabase('streamstats');
-	}
-	catch (DatabaseException)
-	{
-		echo "Failed to connect retrying....\n";
-		sleep(1);
-		continue;
-	}
-	break;
-}
-
-$contents = file_get_contents(__DIR__.'/../db-files/streamstats_schema.sql');
-$statements = explode(';', $contents);
-foreach ($statements as $statement)
-{
-	if (empty($statement)) continue;
-	echo "Executing Statement: ${statement}\n";
-	DBWrapper::Execute($statement);
-}
+$model = waitAndConnectToDB();
+generateSettings($model);
+importSchema();
 
 exec("php-fpm");
+exit(0);
+
+function generateSettings(DatabaseModel $model) : void
+{
+	echo "Generating Settings\n";
+	$settings = [];
+	$settings['environment'] = Environment::DEV;
+	$settings['databases'] = [
+		$model->getDBName() => [
+			'host' => $model->getHost(),
+			'port' => $model->getPort(),
+			'user' => $model->getUser(),
+			'password' => $model->getPassword(),
+			'charset' => $model->getCharset()
+		]
+	];
+
+	var_dump($settings);
+	file_put_contents(__DIR__.'/../settings.json', json_encode($settings));
+}
+
+function importSchema() : void
+{
+	$contents = file_get_contents(__DIR__.'/../db-files/streamstats_schema.sql');
+	$statements = explode(';', $contents);
+	foreach ($statements as $statement)
+	{
+		if (empty($statement)) continue;
+		echo "Executing Statement: ${statement}\n";
+		DBWrapper::Execute($statement);
+	}
+}
+
+function waitAndConnectToDB() : DatabaseModel
+{
+	$model = new DatabaseModel('streamstats', getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASS'));
+	$model->setPort((int)getenv('DB_PORT'));
+
+	DBPool::addPool($model);
+
+	echo "Authenticating to database server...\n";
+	$failed = true;
+	for ($i = 0; $i < 10; $i++)
+	{
+		try
+		{
+			DBPool::connectDatabase('streamstats');
+		}
+		catch (DatabaseException)
+		{
+			echo "Failed to connect retrying....\n";
+			sleep(1);
+			continue;
+		}
+		$failed = false;
+		break;
+	}
+
+	if ($failed)
+	{
+		echo "Failed to connect to database.\n";
+		exit(255);
+	}
+
+	return $model;
+}
