@@ -11,6 +11,7 @@ class Stream extends Model
 	protected int $STREAMID = 0;
 	protected string $TWITCHSTREAMID = '';
 	protected ?int $GAMEID = null;
+	protected string $streamer_name = '';
 	protected string $stream_title = '';
 	protected int $viewers = 0;
 	protected string $date_started = TimeCodes::DATE_ZERO;
@@ -44,6 +45,16 @@ class Stream extends Model
 	public function setGameId(?int $id) : void
 	{
 		$this->GAMEID = $id;
+	}
+
+	public function getStreamerName() : string
+	{
+		return $this->streamer_name;
+	}
+
+	public function setStreamerName(string $streamer_name) : void
+	{
+		$this->streamer_name = $streamer_name;
 	}
 
 	public function getStreamTitle() : string
@@ -106,6 +117,7 @@ class Stream extends Model
 			'STREAMID'       => $this->getStreamId(),
 			'TWITCHSTREAMID' => $this->getTwitchStreamId(),
 			'GAMEID'         => $this->getGameId(),
+			'streamer_name'  => $this->getStreamerName(),
 			'stream_title'   => $this->getStreamTitle(),
 			'viewers'        => $this->getViewers(),
 			'date_started'   => $this->getDateStarted(),

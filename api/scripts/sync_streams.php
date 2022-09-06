@@ -80,6 +80,7 @@ function syncStreams(TwitchClient $twitch)
 			$ids[$data['id']] = true;
 
 			$stream = new Stream();
+			$stream->setStreamerName($data['user_name']);
 			$stream->setTwitchStreamId($data['id']);
 			$stream->setGameId(($known_games[$data['game_id']] ?? null)?->getGameId() ?? null);
 			$stream->setStreamTitle($data['title']);
