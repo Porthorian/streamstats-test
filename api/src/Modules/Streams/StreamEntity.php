@@ -31,6 +31,31 @@ class StreamEntity extends DBEntity
 		return $output;
 	}
 
+	public function getMedianViewersForAllStreams() : int
+	{
+		$results = DBWrapper::PResult('
+			SELECT DISTINCT viewers FROM streams ORDER BY viewers DESC;
+		');
+		$viewers = [];
+		foreach ($results as $result)
+		{
+			$viewers[] = $result['viewers'];
+		}
+
+		$length = count($viewers);
+		/**
+		 * Binary search the median number
+		 */
+		if ($length % 2 === 0)
+		{
+			$middle_index = floor($length / 2);
+
+			return floor(($viewers[$middle_index] + $viewers[$middle_index - 1]) / 2);
+		}
+
+		return $viewers[floor($length / 2)];
+	}
+
 	////
 	// Interface routines
 	////

@@ -57,12 +57,12 @@ class Routes
 	private function streamsRoutes() : void
 	{
 		$this->collector->group('/streams', function (RouteCollectorProxyInterface $group) {
-			$this->collector->get('/median', StreamsController::class.':getMedianNumberOfViewers');
-			$this->collector->get('/top100', StreamsController::class.':getTop100StreamsByViewerCount');
-			$this->collector->get('/total_start', StreamsController::class.':getTotalNumberStreamsByStartTime');
-			$this->collector->get('/top1000_following', StreamsController::class.':getTop1000StreamsFollowingByUser');
-			$this->collector->get('/lowest_following_calc', StreamsController::class.'getCalcLowestViewerCountToMakeTop1000');
-			$this->collector->get('/tags_shared', StreamsController::class.'getTagsSharedBetweenFollowedStreams');
+			$group->get('/median', StreamsController::class.':getMedianOfViewers');
+			$group->get('/top100', StreamsController::class.':getTop100StreamsByViewerCount');
+			$group->get('/total_start', StreamsController::class.':getTotalNumberStreamsByStartTime');
+			$group->get('/top1000_following', StreamsController::class.':getTop1000StreamsFollowingByUser');
+			$group->get('/lowest_following_calc', StreamsController::class.'getCalcLowestViewerCountToMakeTop1000');
+			$group->get('/tags_shared', StreamsController::class.'getTagsSharedBetweenFollowedStreams');
 		})->add(new Auth());
 	}
 }
