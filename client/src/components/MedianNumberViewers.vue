@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="justify-center">
-      Median number of viewers for all streams
+      Median Viewers for all Streams
     </v-card-title>
     <v-card-text>
       {{ median }}
