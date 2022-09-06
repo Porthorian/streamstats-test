@@ -18,9 +18,7 @@ class StreamsController
 	 */
 	public function getMedianOfViewers(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
-		$median = (new StreamEntity())->getMedianViewersForAllStreams();
-
-		return ResponseHelper::success($response, ['median' => $median]);
+		return ResponseHelper::success($response, ['median' => (new StreamEntity())->getMedianViewersForAllStreams()]);
 	}
 
 	/**
@@ -31,13 +29,9 @@ class StreamsController
 	{
 		$params = $request->getQueryParams();
 
-		$output = [];
-		foreach ((new StreamEntity())->getTop100StreamsByViewer($params['order'] ?? 'DESC') as $stream)
-		{
-			$output[] = $stream->toPublicArray();
-		}
-
-		return ResponseHelper::success($response, $output);
+		return ResponseHelper::success($response, array_map(function ($stream) {
+			return $stream->toPublicArray();
+		}, (new StreamEntity())->getTop100StreamsByViewer($params['order'] ?? 'DESC')));
 	}
 
 	/**
