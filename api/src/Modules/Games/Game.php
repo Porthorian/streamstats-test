@@ -4,13 +4,14 @@ declare(strict_types=1);
 namespace Porthorian\StreamStats\Modules\Games;
 
 use Porthorian\EntityOrm\Model\Model;
+use Porthorian\Utility\Time\TimeCodes;
 
 class Game extends Model
 {
 	protected int $GAMEID = 0;
 	protected string $TWITCHGAMEID = '';
 	protected string $game_name = '';
-	protected string $last_seen = '0000-00-00 00:00:00';
+	protected string $last_seen = TimeCodes::DATE_ZERO;
 
 	public function getGameId() : int
 	{
