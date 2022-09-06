@@ -31,7 +31,7 @@ export default {
 
   async created() {
     try {
-      const response = await axios.get('http://localhost/streams/top1000_following')
+      const response = await axios.get('/streams/top1000_following')
       const data = response['data']['data']
       for (const item of data) {
         this.items.push({

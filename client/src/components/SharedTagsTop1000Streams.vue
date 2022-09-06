@@ -29,7 +29,7 @@ export default {
 
   async created() {
     try {
-      const response = await axios.get('http://localhost/streams/tags_shared')
+      const response = await axios.get('/streams/tags_shared')
       const data = response['data']['data']
       for (const item of data) {
         this.items.push({

@@ -29,7 +29,7 @@ export default {
 
   async created() {
     try {
-      const response = await axios.get('http://localhost/games/total')
+      const response = await axios.get('/games/total')
       const data = response['data']['data']
       for (const item of data) {
         this.items.push({

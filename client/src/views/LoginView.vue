@@ -36,12 +36,12 @@ export default {
   methods: {
     startAuthentication () {
       this.loading = true
-      window.open('http://localhost/twitch/redirect', '','scrollbars=yes,menubar=no,height=800,width=640,left=0,top=0,screenX=0,screenY=0,resizable=no,toolbar=no,location=no,status=no')
+      window.open(axios.defaults.baseURL + '/twitch/redirect', '','scrollbars=yes,menubar=no,height=800,width=640,left=0,top=0,screenX=0,screenY=0,resizable=no,toolbar=no,location=no,status=no')
       setTimeout(this.refresh, 1000)
     },
     refresh() {
       let timeout = setTimeout(this.refresh, 1000)
-      axios.get('http://localhost/user')
+      axios.get('/user')
         .then((res) => {
           this.$store.dispatch('login', res['data']['data'])
           clearTimeout(timeout)

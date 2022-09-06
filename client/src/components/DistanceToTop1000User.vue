@@ -62,7 +62,7 @@ export default {
 
   async created() {
     try {
-      const response = await axios.get('http://localhost/streams/lowest_following_calc')
+      const response = await axios.get('/streams/lowest_following_calc')
       const data = response['data']['data']
       this.stream.title = data['stream']['stream_title']
       this.stream.name = data['stream']['streamer_name']

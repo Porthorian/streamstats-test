@@ -78,7 +78,7 @@ export default {
   methods: {
     async login () {
       try {
-        const response = await axios.get('http://localhost/user')
+        const response = await axios.get('/user')
         const data = response['data']['data']
         this.$store.dispatch('login', data)
       } catch (error) {
@@ -87,7 +87,7 @@ export default {
     },
     async logout () {
       try {
-        await axios.get('http://localhost/auth/logout')
+        await axios.get('/auth/logout')
       } catch (error) {
         console.log(error)
       }

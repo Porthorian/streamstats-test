@@ -5,6 +5,11 @@ import axios from 'axios'
 import store from './store'
 
 axios.defaults.withCredentials = true
+let baseurl = 'http://localhost'
+if (process.env.NODE_ENV == "production") {
+  baseurl = 'https://api.streamstats.kriekon.com'
+}
+axios.defaults.baseURL = baseurl
 Vue.config.productionTip = false
 
 new Vue({

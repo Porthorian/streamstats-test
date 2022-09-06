@@ -20,7 +20,7 @@ export default {
 
   async created() {
     try {
-      const response = await axios.get('http://localhost/streams/median')
+      const response = await axios.get('/streams/median')
       this.median = response['data']['data']['median']
     } catch (error) {
       console.log(error)

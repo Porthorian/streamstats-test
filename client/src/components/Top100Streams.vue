@@ -31,7 +31,7 @@ export default {
 
   async created() {
     try {
-      const response = await axios.get('http://localhost/streams/top100')
+      const response = await axios.get('/streams/top100')
       const data = response['data']['data']
       for (const item of data) {
         this.items.push({
