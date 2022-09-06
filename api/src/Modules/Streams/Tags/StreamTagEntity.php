@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Porthorian\StreamStats\Modules\Streams\Tags;
 
 use Porthorian\DBEntity\DBEntity;
+use Porthorian\PDOWrapper\DBWrapper;
 
 class StreamTagEntity extends DBEntity
 {

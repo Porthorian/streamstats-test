@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Porthorian\StreamStats\Modules\Streams\Tags;
 
 use Porthorian\EntityOrm\Model\Model;
+use Porthorian\Utility\Time\TimeCodes;
 
 class Tag extends Model
 {
@@ -11,6 +12,7 @@ class Tag extends Model
 	protected string $TWITCHTAGID = '';
 	protected string $name = '';
 	protected string $description = '';
+	protected string $last_seen = TimeCodes::DATE_ZERO;
 
 	public function getTagId() : int
 	{
@@ -52,6 +54,16 @@ class Tag extends Model
 		$this->description = $description;
 	}
 
+	public function getLastSeen() : string
+	{
+		return $this->last_seen;
+	}
+
+	public function setLastSeen(string $date_time) : void
+	{
+		$this->last_seen = $date_time;
+	}
+
 	////
 	// Interface routines
 	////
@@ -69,16 +81,19 @@ class Tag extends Model
 	public function toArray() : array
 	{
 		return [
-			'TAGID' => $this->getTagId(),
+			'TAGID'       => $this->getTagId(),
 			'TWITCHTAGID' => $this->getTwitchTagId(),
-			'name' => $this->getName(),
-			'description' => $this->getDescription()
+			'name'        => $this->getName(),
+			'description' => $this->getDescription(),
+			'last_seen'   => $this->getLastSeen()
 		];
 	}
 
 	public function toPublicArray() : array
 	{
-		return $this->toArray();
+		$array = $this->toArray();
+		unset($array['last_seen']);
+		return $array;
 	}
 
 	public function getEntityPath() : string

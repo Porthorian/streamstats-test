@@ -43,7 +43,7 @@ function syncGames(TwitchClient $twitch) : void
 		shuffle($games);
 		foreach ($games as $data)
 		{
-			echo "Checking game ".$data['id'].': '.$data['name'].PHP_EOL;
+			echo "Game ".$data['id'].': '.$data['name'].PHP_EOL;
 			if (isset($known_games[$data['id']]))
 			{
 				$update_game = $known_games[$data['id']];

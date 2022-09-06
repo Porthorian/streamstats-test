@@ -41,7 +41,8 @@ CREATE TABLE tags
     TAGID       INT(10) UNSIGNED       NOT NULL PRIMARY KEY AUTO_INCREMENT,
     TWITCHTAGID VARCHAR(255)           NOT NULL UNIQUE KEY,
     name        VARCHAR(255)           NOT NULL,
-    description TEXT                   NOT NULL
+    description TEXT                   NOT NULL,
+    last_seen   DATETIME               NOT NULL
 );
 
 CREATE TABLE stream_tags
@@ -59,7 +60,7 @@ CREATE TABLE stream_tags
         FOREIGN KEY (STREAMID)
         REFERENCES streams(STREAMID)
         ON DELETE CASCADE
-)
+);
 
 CREATE TABLE users_following_streams
 (

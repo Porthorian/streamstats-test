@@ -245,7 +245,7 @@ class Client
 		{
 			throw new TwitchException('Failed to decode stream tags. Error: '.JsonWrapper::getLastError());
 		}
-		$cursor = $decode['pagination']['cursor'];
+		$cursor = $decode['pagination']['cursor'] ?? '';
 		return $decode['data'];
 	}
 

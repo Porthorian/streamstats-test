@@ -8,6 +8,8 @@ use Porthorian\StreamStats\Modules\Twitch\Client as TwitchClient;
 use Porthorian\StreamStats\Modules\Twitch\ClientAuth;
 use Porthorian\StreamStats\Modules\Streams\Stream;
 use Porthorian\StreamStats\Modules\Streams\StreamEntity;
+use Porthorian\StreamStats\Modules\Streams\Tags\StreamTag;
+use Porthorian\StreamStats\Modules\Streams\Tags\Tag;
 use Porthorian\StreamStats\Modules\Games\GameEntity;
 use Porthorian\PDOWrapper\DBWrapper;
 use Porthorian\Utility\Time\TimeCodes;
@@ -48,7 +50,7 @@ function syncStreams(TwitchClient $twitch)
 		shuffle($streams);
 		foreach ($streams as $data)
 		{
-			echo "Checking Stream ".$data['id'].'): Game: '.$data['game_id'].'): '.$data['title'].PHP_EOL;
+			echo "Stream ".$data['id'].'): Game: '.$data['game_id'].'): '.$data['title'].PHP_EOL;
 
 			if (isset($known_streams[$data['id']]))
 			{
@@ -64,6 +66,7 @@ function syncStreams(TwitchClient $twitch)
 					$update_stream->setGameId($known_games[$data['game_id']]->getGameId());
 				}
 				$update_stream->createEntity()->update($params);
+				syncTagsToStream($update_stream, $data['tag_ids'] ?? []);
 				continue;
 			}
 
@@ -84,6 +87,7 @@ function syncStreams(TwitchClient $twitch)
 			$stream->setDateStarted($data['started_at']);
 			$stream->setLastSeen(date(TimeCodes::DATEFORMAT_STANDARD));
 			$stream->createEntity()->store();
+			syncTagsToStream($stream, $data['tag_ids'] ?? []);
 		}
 
 		if ($cursor == '')
@@ -94,4 +98,24 @@ function syncStreams(TwitchClient $twitch)
 
 	DBWrapper::factory('DELETE FROM streams WHERE last_seen < DATE_SUB(?, INTERVAL 20 MINUTE)', [$last_ran]);
 	DBWrapper::commitTransaction();
+}
+
+function syncTagsToStream(Stream $stream, array $tags) : void
+{
+	$known_tags = (new Tag())->createEntity()->getTagsByTwitchId($tags);
+	DBWrapper::PExecute('DELETE FROM stream_tags WHERE STREAMID = ?', [$stream->getStreamId()]);
+	foreach ($tags as $tag_id)
+	{
+		if (!isset($known_tags[$tag_id]))
+		{
+			continue;
+		}
+		echo "Stream ".$stream->getTwitchStreamId()." Tag: ".$tag_id.PHP_EOL;
+
+		$tag = $known_tags[$tag_id];
+		$stream_tag =  new StreamTag();
+		$stream_tag->setTagId($tag->getTagId());
+		$stream_tag->setStreamId($stream->getStreamId());
+		$stream_tag->createEntity()->store();
+	}
 }

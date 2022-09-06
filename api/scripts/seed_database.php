@@ -9,6 +9,13 @@ if ($exit != 0)
 {
 	throw new Exception('Sync games failed.');
 }
+
+$exit = passthru("php ${location}/sync_tags.php");
+if ($exit != 0)
+{
+	throw new Exception('Failed to sync tags.');
+}
+
 $exit = passthru("php ${location}/sync_streams.php");
 if ($exit != 0)
 {
