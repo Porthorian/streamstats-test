@@ -7,7 +7,9 @@ CREATE TABLE users
     USERID          INT(10) UNSIGNED    NOT NULL PRIMARY KEY AUTO_INCREMENT,
     TWITCHUSERID    VARCHAR(255)        NOT NULL UNIQUE KEY,
     email           VARCHAR(255)        NOT NULL,
-    username        VARCHAR(255)        NOT NULL
+    username        VARCHAR(255)        NOT NULL,
+    access_token    VARCHAR(255)        NOT NULL,
+    refresh_token   VARCHAR(255)        NOT NULL
 );
 
 CREATE TABLE games

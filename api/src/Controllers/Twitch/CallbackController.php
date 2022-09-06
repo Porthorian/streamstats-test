@@ -60,9 +60,12 @@ class CallbackController
 			$entity->store();
 		}
 
+		$user->setAccessToken($auth->getAccessToken());
+		$user->setRefreshToken($auth->getRefreshToken());
+		$user->createEntity()->update(['access_token', 'refresh_token']);
+
 		Session::start();
-		Session::set('user_logged_in', $user->toArray());
-		Session::set('twitch_bearer_token', $auth->getAccessToken());
+		Session::set('user_id_logged_in', $user->getUserId());
 
 		$response->getBody()->write('logged in');
 		return $response->withStatus(200);

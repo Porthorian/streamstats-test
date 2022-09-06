@@ -67,11 +67,9 @@ class ClientAuth
 		if (isset($decoded['refresh_token']))
 		{
 			$this->setRefreshToken($decoded['refresh_token']);
-			Cache::set('twitch:refresh_token:'.$this->getAccessToken(), $decoded['refresh_token'], (int)($decoded['expires_in'] * 2));
 		}
 	}
 
-	// @TODO
 	public function validate() : void
 	{
 		try
@@ -106,6 +104,11 @@ class ClientAuth
 	public function getAccessToken() : string
 	{
 		return $this->access_token;
+	}
+
+	public function getRefreshToken() : string
+	{
+		return $this->refresh_token;
 	}
 
 	public function setCode(string $code) : void
