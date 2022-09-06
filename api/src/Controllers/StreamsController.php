@@ -6,7 +6,9 @@ namespace Porthorian\StreamStats\Controllers;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Porthorian\StreamStats\Modules\Streams\StreamEntity;
+use Porthorian\StreamStats\Modules\Streams\FollowingEntity;
 use Porthorian\StreamStats\Util\ResponseHelper;
+use Porthorian\StreamStats\Session;
 
 class StreamsController
 {
@@ -53,7 +55,9 @@ class StreamsController
 	 */
 	public function getTop1000StreamsFollowingByUser(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
-		return $response;
+		return ResponseHelper::success($response, array_map(function ($stream) {
+			return $stream->toPublicArray();
+		}, (new FollowingEntity())->getTop1000IsUserFollowing(Session::get('user_id_logged_in'))));
 	}
 
 	/**
