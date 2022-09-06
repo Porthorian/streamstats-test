@@ -6,15 +6,15 @@ namespace Porthorian\StreamStats\Controllers;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Porthorian\StreamStats\Modules\Streams\StreamEntity;
+use Porthorian\Utility\Json\JsonWrapper;
 
 class StreamsController
 {
 	public function getMedianOfViewers(ServerRequestInterface $request, ResponseInterface $response) : ResponseInterface
 	{
-		$entity = new StreamEntity();
-		echo "<pre>";
-		var_dump($entity->getMedianViewersForAllStreams());
-		echo "</pre>";
-		return $response;
+		$median = (new StreamEntity())->getMedianViewersForAllStreams();
+
+		$response->getBody()->write(JsonWrapper::json(['data' => ['median' => $median]]));
+		return $response->withHeader('Content-type', 'application/json')->withStatus(200);
 	}
 }
