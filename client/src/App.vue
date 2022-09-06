@@ -60,11 +60,9 @@ export default {
       try {
         const response = await axios.get('http://localhost/user')
         const data = response['data']['data']
-        this.$store.commit('setUser', data)
-        this.$store.commit('login')
+        this.$store.dispatch('login', data)
       } catch (error) {
-        this.$store.commit('setUser', null)
-        this.$store.commit('logout')
+        this.$store.dispatch('logout')
       }
     },
     async logout () {
@@ -74,8 +72,7 @@ export default {
         console.log(error)
       }
 
-      this.$store.commit('setUser', null)
-      this.$store.commit('logout')
+      this.$store.dispatch('logout')
     }
   }
 };

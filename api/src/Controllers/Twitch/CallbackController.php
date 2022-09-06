@@ -65,7 +65,7 @@ class CallbackController
 		Session::start();
 		Session::set('user_id_logged_in', $user->getUserId());
 
-		$response->getBody()->write('logged in');
+		$response->getBody()->write('<script>window.close()</script>');
 		return $response->withStatus(200);
 	}
 

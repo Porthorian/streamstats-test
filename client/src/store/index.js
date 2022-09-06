@@ -17,10 +17,8 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    setUser (state, payload) {
+    login (state, payload) {
       state.user = payload
-    },
-    login (state) {
       state.logged_in = true
     },
     logout (state) {
@@ -28,11 +26,8 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    setUser (context) {
-      context.commit('setUser')
-    },
-    login (context) {
-      context.commit('login')
+    login (context, payload) {
+      context.commit('login', payload)
     },
     logout (context) {
       context.commit('logout')

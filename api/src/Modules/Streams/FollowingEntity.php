@@ -52,7 +52,7 @@ class FollowingEntity extends DBEntity
 		$stream = new Stream();
 		$stream->setModelProperties($result);
 		$stream->setInitializedFlag(true);
-		$number = $last_stream->getViewers() - $result['viewers'];
+		$number = $last_stream->getViewers() - ($result['viewers'] ?? 0);
 		// Pretty good taste for this you.
 		// You following everything in the top 1000.
 		if ($number < 0)
