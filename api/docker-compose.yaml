@@ -2,8 +2,17 @@ version: '3.8'
 
 services:
   app:
-    image: php:8.1-fpm-buster
+    build: dev-env/php
     container_name: stream_stats_php
+    restart: unless-stopped
+    command: bash -c "php /home/app/dev-env/bootstrap_project.php"
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: stream_stats_mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASS: test_password
     volumes:
       - ./:/home/app:rw
     networks:
@@ -13,12 +22,29 @@ services:
     image: nginx:stable
     container_name: stream_stats_nginx
     restart: unless-stopped
+    depends_on:
+      - app
     tty: true
     ports:
       - "80:80"
     volumes:
       - ./:/home/app:rw
       - ./dev-env/api-streamstats.conf:/etc/nginx/conf.d/api-streamstats.conf:ro
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:latest
+    container_name: stream_stats_mysql
+    restart: unless-stopped
+    ports:
+      - 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: test_password
+      MYSQL_DATABASE: streamstats
+    volumes:
+      - ./local/mysql:/var/lib/mysql
+      - ./db-files/streamstats_schema.sql:/root/streamstats_schema.sql
     networks:
       - app-network
 
@@ -31,10 +57,7 @@ services:
     networks:
       - app-network
     volumes:
-      - redis-data:/data
-
-volumes:
-  redis-data:
+      - ./local/redis:/data
 
 networks:
   app-network:
