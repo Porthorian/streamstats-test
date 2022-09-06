@@ -5,8 +5,11 @@
     </v-card-title>
     <v-data-table
       :headers="headers"
+      item-key="name"
       :items="items"
       :items-per-page="5"
+      :loading="loading"
+      loading-text="Loading... Please wait"
     />
   </v-card>
 </template>
@@ -21,7 +24,8 @@ export default {
       { text: 'Game', value: 'name' },
       { text: 'Total', value: 'total' }
     ],
-    items: []
+    items: [],
+    loading: true
   }),
 
   async created() {
@@ -34,6 +38,7 @@ export default {
           total: item.total_viewers
         });
       }
+      this.loading = false
     } catch (error) {
       console.log(error)
     }

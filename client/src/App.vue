@@ -2,8 +2,6 @@
   <v-app>
     <v-app-bar
       app
-      color="primary"
-      dark
     >
       <v-toolbar-title>
         StreamStats
@@ -29,7 +27,7 @@
           </v-col>
           <v-spacer></v-spacer>
         </v-row>
-        <v-row class="text-center">
+        <v-row>
           <v-col cols="6">
             <TotalStreamsGame/>
           </v-col>
@@ -37,8 +35,24 @@
             <TopGamesByViewerCount/>
           </v-col>
         </v-row>
+        <v-row>
+          <v-col cols="6">
+            <Top100Streams/>
+          </v-col>
+          <v-col cols="6">
+            <TotalStreamsByDate/>
+          </v-col>
+        </v-row>
       </v-container>
     </v-main>
+    <v-footer padless>
+      <v-col
+        class="text-center"
+        cols="12"
+      >
+        {{ new Date().getFullYear() }} — <strong>Vincent Marone</strong>
+      </v-col>
+    </v-footer>
   </v-app>
 </template>
 
@@ -46,13 +60,17 @@
 import TotalStreamsGame from './components/TotalStreamsGame'
 import TopGamesByViewerCount from './components/TopGamesByViewerCount'
 import MedianNumberViewers from './components/MedianNumberViewers'
+import Top100Streams from './components/Top100Streams'
+import TotalStreamsByDate from './components/TotalStreamsByDate'
 export default {
   name: 'App',
 
   components: {
     TotalStreamsGame,
     TopGamesByViewerCount,
-    MedianNumberViewers
+    MedianNumberViewers,
+    Top100Streams,
+    TotalStreamsByDate
   },
 
   data: () => ({
