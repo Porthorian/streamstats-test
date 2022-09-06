@@ -32,10 +32,10 @@ class ResponseHelper
 
 	public static function errorMessage(ResponseInterface $response, string $message, int $code = 400) : ResponseInterface
 	{
-		return self::error($response, $code, ['message' => $message]);
+		return self::error($response, $code, ['error' => $message]);
 	}
 
-	private static function cors(ResponseInterface $response) : ResponseInterface
+	public static function cors(ResponseInterface $response) : ResponseInterface
 	{
 		return $response
 			->withHeader('Access-Control-Allow-Origin', 'http://localhost:8080')

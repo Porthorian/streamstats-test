@@ -8,6 +8,7 @@ use Slim\Interfaces\RouteCollectorProxyInterface;
 use Porthorian\StreamStats\Controllers\Twitch\CallbackController;
 use Porthorian\StreamStats\Controllers\GamesController;
 use Porthorian\StreamStats\Controllers\StreamsController;
+use Porthorian\StreamStats\Controllers\AuthController;
 use Porthorian\StreamStats\Middleware\Auth;
 
 class Routes
@@ -22,6 +23,7 @@ class Routes
 	public function generateRoutes() : void
 	{
 		$this->twitchIntegration();
+		$this->authRoutes();
 		$this->gamesRoutes();
 		$this->streamsRoutes();
 	}
@@ -32,6 +34,12 @@ class Routes
 			$group->get('/callback', CallbackController::class.':login');
 			$group->get('/redirect', CallbackController::class.':sendRedirect');
 		});
+	}
+
+	private function authRoutes() : void
+	{
+		$this->collector->get('/auth/logout', AuthController::class.':logout')->add(new Auth());
+		$this->collector->get('/user', AuthController::class.':getLoggedInUser')->add(new Auth());
 	}
 
 	/**
