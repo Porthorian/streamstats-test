@@ -75,7 +75,7 @@ class CallbackController
 			$update_params[] = 'refresh_token';
 		}
 
-		if (!empty($update_params)) $user->createEntity()->update($params);
+		if (!empty($update_params)) $user->createEntity()->update($update_params);
 
 		Session::start();
 		Session::set('user_id_logged_in', $user->getUserId());
